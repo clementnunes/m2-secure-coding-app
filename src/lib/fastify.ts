@@ -25,7 +25,7 @@ void server.register((app, _, done) => {
     const userRepo = dbConn.appDataSource.getRepository(User)
     const userController = new UserController(userRepo);
 
-    app.get('/users', () => userController.getCollection());
+    /*app.get('/users', () => userController.getCollection());
 
     app.get<{ Params: { id: string } }>('/users/:id', (request) => userController.get(request.params.id));
 
@@ -40,14 +40,12 @@ void server.register((app, _, done) => {
     app.route({
         method: "GET",
         url: '/users',
-        schema: schema,
         handler: () => userController.getCollection()
     });
 
     app.route({
         method: "GET",
         url: '/users/:id',
-        schema: schema,
         handler: (request: FastifyRequest) => {
             const params = request.params as Params;
 
@@ -73,11 +71,11 @@ void server.register((app, _, done) => {
         url: "/two",
         handler: () => "two"
     });
-
+    */
     done();
 });
 
-const start = async () => {
+/*const start = async () => {
     const dbConn = DbConn.getInstance();
     await dbConn.initialize()
 
@@ -99,3 +97,4 @@ start()
     .catch(error => {
         console.log(error)
     })
+*/
