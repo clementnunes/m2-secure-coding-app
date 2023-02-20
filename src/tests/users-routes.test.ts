@@ -21,10 +21,12 @@ describe('/users', function () {
     before(async () => {
         await userRepo.clear()
 
+        const rand = Date.now();
+
         user = await userService.addAndPersist(
-            "Init",
-            "Init",
-            "init@init.init",
+            "Init" + rand,
+            "Init" + rand,
+            "init@init.init" + rand,
             new SetPasswordDTO("Test12345664234.", "Test12345664234.")
         )
     })
