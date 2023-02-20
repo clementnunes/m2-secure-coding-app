@@ -10,8 +10,8 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
         const userRepo: Repository<User> = DbConn.getInstance().appDataSource.getRepository(User)
         const userService = UserService.getInstance(userRepo);
 
-        const count = await userService.count();
+        const user = await userService.findByEmail(value);
 
-        return (count <= 0);
+        return (user === null);
     }
 }

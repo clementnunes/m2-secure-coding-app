@@ -13,16 +13,16 @@ dotenv.config()
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn("uuid", { name: "id" })
     private _id!: string;
 
-    @Column({ nullable: false })
+    @Column({ name: "firstName", nullable: false })
     @IsNotEmpty({
         message: "firstName should not be empty"
     })
     private _firstName!: string;
 
-    @Column({ nullable: false })
+    @Column({ name: "lastName", nullable: false })
     @IsNotEmpty({
         message: "lastName should not be empty"
     })
@@ -31,6 +31,7 @@ export class User {
     @Column({
         nullable: false,
         unique: true,
+        name: "email",
         transformer: {
             to(value : unknown) {
                 return (typeof value === "string") ? (value ).toLowerCase() : value;
@@ -39,7 +40,6 @@ export class User {
                 return (typeof value === "string") ? (value ) : value;
             }
         },
-        name: "email"
     })
     @IsNotEmpty({
         message: "email should not be empty"
@@ -47,7 +47,7 @@ export class User {
     @Unique({message: "email already exists"})
     private _email!: string;
 
-    @Column({ nullable: false })
+    @Column({ name: "password", nullable: false })
     @IsNotEmpty({
         message: "password should not be empty"
     })
@@ -98,7 +98,7 @@ export class User {
                 "Different passwords given",
                 (new Error).stack ?? "",
                 this,
-                "_passwordHash"
+                "password"
             );
         }
 
@@ -115,10 +115,14 @@ export class User {
 
     @BeforeInsert()
     @BeforeUpdate()
-    private async validate()
+    public async validate()
     {
         const errors = await validate(this)
-        if (errors.length) throw errors[0];
+
+        if (errors.length)
+        {
+            throw errors[0];
+        }
     }
 
     public async isPasswordValid(password: string)
