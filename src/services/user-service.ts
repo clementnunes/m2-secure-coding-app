@@ -1,6 +1,11 @@
 import {Repository} from "typeorm";
 import {User} from "../entities/user";
 import {SetPasswordDTO} from "../entities/dto/SetPasswordDTO";
+import {validate} from "class-validator";
+
+interface FindWhereUser {
+    id: string
+}
 
 export class UserService {
     static INSTANCE : null|UserService = null;
@@ -20,7 +25,7 @@ export class UserService {
 
     async add(firstName: string, lastName: string, email: string, setPassword: SetPasswordDTO)
     {
-        const user = new User();
+        const user = this.userRepository.create();
 
         user.firstName = firstName
         user.lastName = lastName
@@ -35,9 +40,8 @@ export class UserService {
 
     async persist(user: User)
     {
+        //await user.validate();
         await this.userRepository.save(user)
-            .then(() => console.log("User has been added"))
-            .catch((e: any) => { throw e })
     }
 
     async addAndPersist(firstName: string, lastName: string, email: string, setPassword: SetPasswordDTO)
@@ -54,11 +58,28 @@ export class UserService {
 
     findById(id: string)
     {
-        return this.userRepository.createQueryBuilder("user").where("user.id = :id", { id: id})
+        return this.userRepository.findOneBy({
+            "_id": id
+        } as unknown as FindWhereUser)
     }
 
     count()
     {
         return this.userRepository.createQueryBuilder("user").getCount();
+    }
+
+    countByEmail(email: string)
+    {
+        return this.userRepository.createQueryBuilder("user").where("user.email = :email", { email: email.toLowerCase()}).getCount();
+    }
+
+    findByEmail(email: string)
+    {
+        return this.userRepository.createQueryBuilder("user").where("user.email = :email", { email: email.toLowerCase()}).getOne();
+    }
+
+    getFirst()
+    {
+        return this.userRepository.createQueryBuilder("user").getOne();
     }
 }

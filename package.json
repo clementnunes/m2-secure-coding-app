@@ -5,10 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "if [ -d \"dist\" ]; then rm -Rf dist; fi && tsc",
+    "build-w": "rmdir /s /q dist && tsc",
     "start": "npm run build && node dist/index.js",
+    "start-w": "npm run build-w && node dist/index.js",
     "start-lint": "npm run lint && npm run build && node dist/index.js",
     "lint": "eslint --fix src",
-    "test": "set NODE_ENV=test&&mocha --recursive dist/tests --exit --async-stack-traces --timeout 60000"
+    "test": "set NODE_ENV=test&&mocha --recursive dist/tests --exit --async-stack-traces --timeout 5000"
   },
   "author": "Thomas VEILLARD",
   "license": "ISC",
@@ -26,6 +28,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@fastify/postgres": "^5.2.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",

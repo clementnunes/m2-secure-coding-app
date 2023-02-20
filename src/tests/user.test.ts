@@ -8,6 +8,7 @@ import {QueryFailedError, Repository} from "typeorm";
 import {UserService} from "../services/user-service"
 import {ValidationError} from "../validator/validation-error";
 import {SetPasswordDTO} from "../entities/dto/SetPasswordDTO";
+import {faker} from "@faker-js/faker";
 
 const dbConn = DbConn.getInstance();
 const userService = UserService.getInstance(dbConn.appDataSource.getRepository(User))
@@ -32,26 +33,34 @@ describe('User', function () {
             let count: number = await userRepo.count()
             expect(count).to.equal(0)
 
-            await userService.addAndPersist(
-                "First Name",
-                "Last Name",
-                "test@test.test",
-                new SetPasswordDTO("Test12345664234.", "Test12345664234.")
-            )
+            const password = faker.internet.password() + ".132";
+            const email = faker.internet.email();
 
-            count = await userRepo.count()
-            expect(count).to.equal(1)
+            await userService.addAndPersist(
+                faker.name.firstName(),
+                faker.name.lastName(),
+                email,
+                new SetPasswordDTO(password, password)
+            ).then((e) => {
+                expect(e).not.to.equal(null)
+            })
+            .catch((e) => {
+                throw e;
+            })
         })
 
         it('should raise error if email is missing', async function () {
+
+            const password = faker.internet.password() + ".132";
+
             const user: User = await userService.add(
-                "First Name",
-                "Last Name",
+                faker.name.firstName(),
+                faker.name.lastName(),
                 "",
-                new SetPasswordDTO("Test12345664234.", "Test12345664234.")
+                new SetPasswordDTO(password, password)
             );
 
-            await expect(userRepo.save(user)).to.eventually.be.rejected.and.deep.include({
+            await expect(userService.persist(user)).to.eventually.be.rejected.and.deep.include({
                 target: user,
                 property: '_email',
                 constraints: {isNotEmpty: 'email should not be empty'}
@@ -59,46 +68,56 @@ describe('User', function () {
         })
 
         it('should raise error if email duplication', async function () {
+            const password = faker.internet.password() + ".132";
+            const email = faker.internet.email();
+
             const user1: User = await userService.add(
-                "First Name1",
-                "Last Name",
-                "test@test.test",
-                new SetPasswordDTO("Test12345664234.", "Test12345664234.")
+                faker.name.firstName(),
+                faker.name.lastName(),
+                email,
+                new SetPasswordDTO(password, password)
             );
+
+            await userService.persist(user1);
+
             const user2: User = await userService.add(
-                "First Name2",
-                "Last Name",
-                "test@test.test",
-                new SetPasswordDTO("Test12345664234.", "Test12345664234.")
+                faker.name.firstName(),
+                faker.name.lastName(),
+                email,
+                new SetPasswordDTO(password, password)
             );
 
-            await userRepo.save(user1)
-
-            await expect(userRepo.save(user2)).to.eventually.be.rejected.and.deep.include({
+            await expect(userService.persist(user2)).to.eventually.be.rejected.and.deep.include({
                 target: user2,
                 property: '_email',
                 constraints: {UniqueConstraint: "email already exists"}
-
             })
         })
 
         it('check unicity if email is upper case', async function () {
+            const password = faker.internet.password() + ".132";
+
+            const email = faker.internet.email();
+
             const user1: User = await userService.add(
-                "First Name1",
-                "Last Name",
-                "test@test.test",
-                new SetPasswordDTO("Test12345664234.", "Test12345664234.")
+                faker.name.firstName(),
+                faker.name.lastName(),
+                email,
+                new SetPasswordDTO(password, password)
             );
+
+            await userService.persist(user1);
+
+            const password2 = faker.internet.password() + ".132";
+
             const user2: User = await userService.add(
-                "First Name",
-                "Last Name",
-                "TEST@TEST.TEST",
-                new SetPasswordDTO("Test12345664234.", "Test12345664234.")
+                faker.name.firstName(),
+                faker.name.lastName(),
+                email.toUpperCase(),
+                new SetPasswordDTO(password2, password2)
             );
 
-            await userRepo.save(user1);
-
-            await expect(userRepo.save(user2)).to.eventually.be.rejected.and.deep.include({
+            await expect(userService.persist(user2)).to.eventually.be.rejected.and.deep.include({
                 target: user2,
                 property: '_email',
                 constraints: {UniqueConstraint: "email already exists"}
@@ -110,9 +129,9 @@ describe('User', function () {
             const longCharsOnlyPwd = new SetPasswordDTO("testtesttestttestetest", "testtesttestttestetest");
 
             await expect(userService.add(
-                "First Name1",
-                "Last Name",
-                "test@test.test",
+                faker.name.firstName(),
+                faker.name.lastName(),
+                faker.internet.email(),
                 longCharsOnlyPwd
             )).to.eventually.be.rejected.and.deep.include({
                 property: 'password',
@@ -126,9 +145,9 @@ describe('User', function () {
             const shortPassword = new SetPasswordDTO("test", "test");
 
             await expect(userService.add(
-                "First Name1",
-                "Last Name",
-                "test@test.test",
+                faker.name.firstName(),
+                faker.name.lastName(),
+                faker.internet.email(),
                 shortPassword
             )).to.eventually.be.rejected.and.deep.include({
                 property: 'password',
@@ -144,9 +163,9 @@ describe('User', function () {
             const pwd = new SetPasswordDTO(password, password);
 
             const user : User = await userService.add(
-                "First Name1",
-                "Last Name",
-                "test@test.test",
+                faker.name.firstName(),
+                faker.name.lastName(),
+                faker.internet.email(),
                 pwd
             )
 
@@ -159,9 +178,9 @@ describe('User', function () {
             const pwd = new SetPasswordDTO("tTest123453345554.", "tTest123453345554.");
 
             const user : User = await userService.add(
-                "First Name1",
-                "Last Name",
-                "test@test.test",
+                faker.name.firstName(),
+                faker.name.lastName(),
+                faker.internet.email(),
                 pwd
             )
 

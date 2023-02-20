@@ -8,14 +8,21 @@ import {User} from "../entities/user";
 import {DbConn} from "../dbConn";
 import {UserService} from "../services/user-service";
 import {SetPasswordDTO} from "../entities/dto/SetPasswordDTO";
+import {DbConnector} from "../lib/db-connector";
+import {usersRoutes} from "../lib/users-routes";
+import {basicRoutes} from "../lib/basic-routes";
+import {FastifyConfig} from "../config/fastify.config";
+import {faker} from "@faker-js/faker"
 
 chai.use(chaiAsPromised)
-//
 
-/*describe('/users', function () {
+
+describe('/users', function () {
     const dbConn = DbConn.getInstance();
     const userRepo = dbConn.appDataSource.getRepository(User)
     const userService = UserService.getInstance(userRepo);
+
+
 
     let user: null|User = null;
 
@@ -24,29 +31,43 @@ chai.use(chaiAsPromised)
 
         const rand = Date.now();
 
+        const password = faker.internet.password() + ".132";
+
         user = await userService.addAndPersist(
-            "Init" + rand,
-            "Init" + rand,
-            "init@init.init" + rand,
-            new SetPasswordDTO("Test12345664234.", "Test12345664234.")
+            faker.name.firstName(),
+            faker.name.lastName(),
+            faker.internet.email(),
+            new SetPasswordDTO(password, password)
         )
+
+        await server.register(DbConnector)
+        await server.register(usersRoutes)
+        await server.register(basicRoutes);
+
+        await server.listen({ port: FastifyConfig.FASTIFY_PORT, host: FastifyConfig.FASTIFY_ADDR })
     })
 
     describe('POST #create', function () {
-        it('should register the user', async function (done: Done) {
-            const response = await server.inject({
+        it('should register the user', function () {
+            return new Promise((resolve) => {
+                const password = faker.internet.password() + ".132";
+
+                server.inject({
                     url: `/users`,
                     method: 'POST',
                     payload: {
-                        "email": "email@test.tester",
-                        "password": "Test12345664234.",
-                        "confirmPassword": "Test12345664234.",
-                        "firstName": "Test",
-                        "lastName": "Test"
-                } });
+                        "email": faker.internet.email(),
+                        "password": password,
+                        "confirmPassword": password,
+                        "firstName": faker.name.firstName(),
+                        "lastName": faker.name.lastName()
+                    }
+                }).then((response: Response) => {
+                    expect(response.statusCode).to.equal(200)
+                    resolve(response);
+                })
+            })
 
-            expect(response.statusCode).to.equal(200);
-            done();
         })
     })
 
@@ -57,24 +78,26 @@ chai.use(chaiAsPromised)
                 method: 'GET',
                 url: '/tests'
             }).then((response: Response) => {
-                console.log(response)
                 expect(response.statusCode).to.equal(200)
             }).then(done, done);
         })
 
-        it('should fetch one user',  async (done : Done) => {
-            if(!user)
-                return;
+        it('should fetch one user',  () => {
+            return new Promise(async (resolve) => {
+                const firstUser = await userService.getFirst();
 
-            const response = await server.inject({
-                method: 'GET',
-                url: `/users/${user.id}`
+                if (!firstUser) {
+                    return;
+                }
+
+                server.inject({
+                    method: 'GET',
+                    url: `/users/${firstUser.id}`
+                }).then((response: Response) => {
+                    expect(response.statusCode).to.equal(200);
+                    resolve(response);
+                })
             })
-
-            console.log(response)
-
-            expect(response.statusCode).to.equal(200);
-            done();
         })
 
         it('should fetch all users',  (done: Done) => {
@@ -82,7 +105,6 @@ chai.use(chaiAsPromised)
                 method: 'GET',
                 url: '/users'
             }).then((response: Response) => {
-                console.log(response)
                 expect(response.statusCode).to.equal(200)
                 done();
             }).catch((err) => {
@@ -90,4 +112,4 @@ chai.use(chaiAsPromised)
             })
         })
     })
-})*/
+})

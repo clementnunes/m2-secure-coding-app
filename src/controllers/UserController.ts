@@ -11,7 +11,9 @@ export class UserController implements IController {
         this.userService = UserService.getInstance(userRepository)
     }
 
-    get(id: string) {
+    get(id: string)
+    {
+        console.log("id = ", id)
         return this.userService.findById(id);
     }
 
@@ -23,14 +25,16 @@ export class UserController implements IController {
     async post(request: FastifyRequest)
     {
         console.log("UserController:Post")
-        console.log(request);
 
-        const pwd = new SetPasswordDTO("tTest123453345554.", "tTest123453345554.");
+        const userData : UserDTO = request.body as UserDTO;
+        console.log("request params = ", request.body)
+
+        const pwd = new SetPasswordDTO(userData.password, userData.confirmPassword);
 
         const user : User = await this.userService.add(
-            "First Name1",
-            "Last Name",
-            "test@test.test",
+            userData.firstName,
+            userData.lastName,
+            userData.email,
             pwd
         )
 
