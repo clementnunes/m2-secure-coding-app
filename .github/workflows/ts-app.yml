@@ -100,7 +100,7 @@ jobs:
     - name: Build Docker image
       run: |
         docker-compose build
-        docker tag m2-secure-coding-app:latest veekz/m2-secure-coding-app:latest
+        docker tag m2-secure-coding-app:latest veekz/m2-secure-coding-app-preproduction:latest
         
     - name: Publish image to Docker Hub
       if: success()
