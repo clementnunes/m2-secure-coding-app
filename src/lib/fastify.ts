@@ -12,6 +12,10 @@ export const server = Fastify({
     pluginTimeout: 20000
 })
 
+interface Params {
+    id: string
+}
+
 /**
  * Run the server!
  */
@@ -45,12 +49,14 @@ void server.register((app, _, done) => {
         url: '/users/:id',
         schema: schema,
         handler: (request: FastifyRequest) => {
-            const params : object = request.params;
-            if(!params.getId())
+            const params = request.params as Params;
+
+            if(!params.hasOwnProperty("id"))
             {
                 return null;
             }
-            const id : string = request.params.id;
+
+            const id : string = params.id;
             return userController.get(id);
         }
     });
