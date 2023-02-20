@@ -1,13 +1,9 @@
-FROM python:alpine3.11
+FROM node:alpine
 
-ENV PORT=5000
+WORKDIR /m2-secure-coding-app
 
-WORKDIR /simple-flask-app
-
+COPY package.json .
+RUN npm install \
 COPY . .
-
-EXPOSE 5000 8000
-
-RUN pip install -r requirements.txt
-
-ENTRYPOINT ["python","app.py"]
+RUN tsc
+CMD ["node", "./dist/index.js"]
