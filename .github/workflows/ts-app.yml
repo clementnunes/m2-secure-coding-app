@@ -51,7 +51,7 @@ jobs:
         type: now
         from_branch: master
         target_branch: prod
-        github_token: ${{ github.token }}
+        github_token: ${{ secrets.TOKEN }}
       
   merge-master-into-preprod:
     runs-on: ubuntu-latest
@@ -66,7 +66,7 @@ jobs:
         type: now
         from_branch: master
         target_branch: preprod
-        github_token: ${{ github.token }}
+        github_token: ${{ secrets.TOKEN }}
 
   build-preproduction:
     runs-on: ubuntu-latest
