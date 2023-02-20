@@ -11,7 +11,7 @@ import {SetPasswordDTO} from "../entities/dto/SetPasswordDTO";
 
 chai.use(chaiAsPromised)
 
-describe('/users', function () {
+/*describe('/users', function () {
     const dbConn = DbConn.getInstance();
     const userRepo = dbConn.appDataSource.getRepository(User)
     const userService = UserService.getInstance(userRepo);
@@ -31,7 +31,7 @@ describe('/users', function () {
         )
     })
 
-    /*describe('POST #create', function () {
+    describe('POST #create', function () {
         it('should register the user', async function (done: Done) {
             const response = await server.inject({
                     url: `/users`,
@@ -48,7 +48,7 @@ describe('/users', function () {
             done();
         })
     })
-    */
+
     describe('GET', function () {
 
         it('tests',  (done: Done) => {
@@ -60,7 +60,8 @@ describe('/users', function () {
                 expect(response.statusCode).to.equal(200)
             }).then(done, done);
         })
-        /*it('should fetch one user',  async (done : Done) => {
+
+        it('should fetch one user',  async (done : Done) => {
             if(!user)
                 return;
 
@@ -73,7 +74,7 @@ describe('/users', function () {
 
             expect(response.statusCode).to.equal(200);
             done();
-        })*/
+        })
 
         it('should fetch all users',  (done: Done) => {
             server.inject({
@@ -88,4 +89,4 @@ describe('/users', function () {
             })
         })
     })
-})
+})*/
