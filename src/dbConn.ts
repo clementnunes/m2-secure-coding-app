@@ -13,7 +13,7 @@ export class DbConn {
     private constructor() {
         const options : DataSourceOptions = {
             type: "postgres",
-            host: (process.env.APP_PROD && process.env.APP_PROD === "ENABLED") ? DBConfig.HOST_PROD : DBConfig.HOST,
+            host: DBConfig.HOST,
             port: DBConfig.PORT,
             username: DBConfig.USERNAME,
             password: DBConfig.PASSWORD,
