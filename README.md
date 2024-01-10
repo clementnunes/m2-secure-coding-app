@@ -2,7 +2,7 @@
 
 ## Overview
 
-m2-secure-coding-app is a web application for Secure Coding Module - Software Engineering @ EFREI.
+m2-secure-coding-app is a web application for Secure Coding Module - Software Engineering @ EFREI.\
 It focuses on secure coding best practises..
   
 ## Table of Contents
@@ -17,7 +17,7 @@ Clone the Repository:
 Open a terminal or command prompt and use the git clone command to clone the repository.
 
 ```
-git clone https://github.com/clementnunes/m2-secure-coding
+git clone https://github.com/clementnunes/m2-secure-coding-app
 ```
 
 Navigate to the Project Directory:
