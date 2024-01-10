@@ -26,8 +26,8 @@ export class SetPasswordDTO {
     private readonly passwordConfirmation: string;
 
     constructor(password: string, passwordConfirmation: string) {
-       this.password = password;
-       this.passwordConfirmation = passwordConfirmation;
+        this.password = password;
+        this.passwordConfirmation = passwordConfirmation;
     }
 
     public getPassword() : string
