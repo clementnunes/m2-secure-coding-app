@@ -3,7 +3,7 @@
 ## Overview
 
 m2-secure-coding-app is a web application for Secure Coding Module - Software Engineering @ EFREI.\
-It focuses on secure coding best practises..
+It focuses on secure coding best practises.
   
 ## Table of Contents
 
