@@ -27,7 +27,18 @@ Change your current directory to the one where the project has been cloned.
 cd repository
 ```
 
+If used without Docker:
+```
+yarn install
+```
+or 
+```
+npm install
+```
+
+
 ## Usage
+Build the application:
 
 
 
